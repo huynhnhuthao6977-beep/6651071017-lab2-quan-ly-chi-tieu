@@ -1,9 +1,22 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [],
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
-    extend: {},
+    screens: {
+      sm: '640px',
+      lg: '1025px',
+    },
+    extend: {
+      colors: {
+        brand: {
+          50: '#ecfdf5',
+          100: '#d1fae5',
+          600: '#059669',
+          700: '#047857',
+          800: '#065f46',
+        },
+      },
+    },
   },
   plugins: [],
 }
-
