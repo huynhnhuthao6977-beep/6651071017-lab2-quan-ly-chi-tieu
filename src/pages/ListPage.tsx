@@ -1,10 +1,69 @@
+import { useState } from 'react'
 import SummaryCard from '../components/SummaryCard'
 import TransactionCard from '../components/TransactionCard'
+import TransactionFilters from '../components/TransactionFilters'
+import type { FilterValues } from '../components/TransactionFilters'
 import { initialTransactions } from '../data/transactions'
 import { formatCurrency } from '../utils'
 
+function createEmptyFilters(): FilterValues {
+  return {
+    keyword: '',
+    type: '',
+    category: '',
+    fromDate: '',
+    toDate: '',
+    minAmount: '',
+    maxAmount: '',
+  }
+}
+
+function normalizeText(value: string): string {
+  return value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[đĐ]/g, 'd')
+    .toLowerCase()
+    .trim()
+}
+
+function validateFilters(filters: FilterValues): string {
+  if (
+    filters.fromDate &&
+    filters.toDate &&
+    filters.fromDate > filters.toDate
+  ) {
+    return 'Ngày bắt đầu phải nhỏ hơn hoặc bằng ngày kết thúc.'
+  }
+
+  for (const value of [filters.minAmount, filters.maxAmount]) {
+    if (
+      value !== '' &&
+      (!Number.isFinite(Number(value)) || Number(value) < 0)
+    ) {
+      return 'Số tiền lọc phải là số hợp lệ và không âm.'
+    }
+  }
+
+  if (
+    filters.minAmount !== '' &&
+    filters.maxAmount !== '' &&
+    Number(filters.minAmount) > Number(filters.maxAmount)
+  ) {
+    return 'Số tiền tối thiểu phải nhỏ hơn hoặc bằng số tiền tối đa.'
+  }
+
+  return ''
+}
+
 export default function ListPage() {
+  const [filters, setFilters] = useState<FilterValues>(
+    createEmptyFilters,
+  )
+
   const transactions = initialTransactions
+  const filterError = validateFilters(filters)
+  const keyword = normalizeText(filters.keyword)
 
   const totalIncome = transactions.reduce(
     (total, transaction) =>
@@ -24,12 +83,41 @@ export default function ListPage() {
 
   const balance = totalIncome - totalExpense
 
-  // Sao chép trước khi sắp xếp để giữ nguyên dữ liệu nguồn.
-  const sortedTransactions = [...transactions].sort(
-    (first, second) =>
-      second.date.localeCompare(first.date) ||
-      first.id.localeCompare(second.id),
-  )
+  const filteredTransactions = transactions
+    .filter((transaction) => {
+      if (filterError) {
+        return false
+      }
+
+      const searchableText = normalizeText(
+        `${transaction.title} ${transaction.note}`,
+      )
+
+      return (
+        searchableText.includes(keyword) &&
+        (filters.type === '' ||
+          transaction.type === filters.type) &&
+        (filters.category === '' ||
+          transaction.category === filters.category) &&
+        (filters.fromDate === '' ||
+          transaction.date >= filters.fromDate) &&
+        (filters.toDate === '' ||
+          transaction.date <= filters.toDate) &&
+        (filters.minAmount === '' ||
+          transaction.amount >= Number(filters.minAmount)) &&
+        (filters.maxAmount === '' ||
+          transaction.amount <= Number(filters.maxAmount))
+      )
+    })
+    .sort(
+      (first, second) =>
+        second.date.localeCompare(first.date) ||
+        first.id.localeCompare(second.id),
+    )
+
+  function resetFilters() {
+    setFilters(createEmptyFilters())
+  }
 
   return (
     <>
@@ -77,6 +165,13 @@ export default function ListPage() {
         />
       </section>
 
+      <TransactionFilters
+        filters={filters}
+        error={filterError}
+        onChange={setFilters}
+        onReset={resetFilters}
+      />
+
       <section
         aria-labelledby="transactions-title"
         className="mt-10"
@@ -89,14 +184,18 @@ export default function ListPage() {
             Danh sách giao dịch
           </h2>
 
-          <p className="text-sm text-slate-600">
-            {transactions.length} giao dịch · Mới nhất trước
+          <p
+            role="status"
+            className="text-sm text-slate-600"
+          >
+            Hiển thị {filteredTransactions.length}/{transactions.length}
+            {' '}giao dịch · Mới nhất trước
           </p>
         </div>
 
-        {sortedTransactions.length > 0 ? (
+        {filteredTransactions.length > 0 ? (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {sortedTransactions.map((transaction) => (
+            {filteredTransactions.map((transaction) => (
               <TransactionCard
                 key={transaction.id}
                 transaction={transaction}
@@ -105,11 +204,25 @@ export default function ListPage() {
           </div>
         ) : (
           <div className="rounded-2xl border border-slate-200 bg-white px-6 py-12 text-center">
-            <p className="font-semibold">Chưa có giao dịch</p>
+            <p className="font-semibold">
+              {filterError
+                ? 'Bộ lọc chưa hợp lệ'
+                : 'Không có giao dịch phù hợp'}
+            </p>
 
             <p className="mt-2 text-sm text-slate-600">
-              Các khoản thu và chi sẽ xuất hiện tại đây.
+              {filterError
+                ? 'Kiểm tra lại khoảng ngày và khoảng tiền.'
+                : 'Thử thay đổi từ khóa hoặc xóa các điều kiện lọc.'}
             </p>
+
+            <button
+              type="button"
+              onClick={resetFilters}
+              className="mt-4 min-h-11 rounded-lg bg-brand-700 px-4 py-2 font-semibold text-white hover:bg-brand-800"
+            >
+              Xóa bộ lọc
+            </button>
           </div>
         )}
       </section>
