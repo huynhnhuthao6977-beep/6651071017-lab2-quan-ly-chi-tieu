@@ -1,11 +1,17 @@
 import { Link, useParams } from 'react-router-dom'
-import { initialTransactions } from '../data/transactions'
+import type { Transaction } from '../types'
 import { formatCurrency } from '../utils'
 
-export default function DetailPage() {
+type DetailPageProps = {
+  transactions: Transaction[]
+}
+
+export default function DetailPage({
+  transactions,
+}: DetailPageProps) {
   const { id } = useParams<{ id: string }>()
 
-  const transaction = initialTransactions.find(
+    const transaction = transactions.find(
     (item) => item.id === id,
   )
 

@@ -3,8 +3,14 @@ import SummaryCard from '../components/SummaryCard'
 import TransactionCard from '../components/TransactionCard'
 import TransactionFilters from '../components/TransactionFilters'
 import type { FilterValues } from '../components/TransactionFilters'
-import { initialTransactions } from '../data/transactions'
+import TransactionForm from '../components/TransactionForm'
+import type { Transaction } from '../types'
 import { formatCurrency } from '../utils'
+
+type ListPageProps = {
+  transactions: Transaction[]
+  onAdd: (transaction: Omit<Transaction, 'id'>) => void
+}
 
 function createEmptyFilters(): FilterValues {
   return {
@@ -56,12 +62,16 @@ function validateFilters(filters: FilterValues): string {
   return ''
 }
 
-export default function ListPage() {
+export default function ListPage({
+  transactions,
+  onAdd,
+}: ListPageProps) {
+  const [isFormOpen, setIsFormOpen] = useState(false)
+  const [message, setMessage] = useState('')
   const [filters, setFilters] = useState<FilterValues>(
     createEmptyFilters,
   )
 
-  const transactions = initialTransactions
   const filterError = validateFilters(filters)
   const keyword = normalizeText(filters.keyword)
 
@@ -83,6 +93,7 @@ export default function ListPage() {
 
   const balance = totalIncome - totalExpense
 
+  // filter tạo mảng mới, nên sort không thay đổi dữ liệu từ props.
   const filteredTransactions = transactions
     .filter((transaction) => {
       if (filterError) {
@@ -115,8 +126,19 @@ export default function ListPage() {
         first.id.localeCompare(second.id),
     )
 
-  function resetFilters() {
+  function resetFilters(): void {
     setFilters(createEmptyFilters())
+  }
+
+  function handleAddTransaction(
+    draft: Omit<Transaction, 'id'>,
+  ): void {
+    onAdd(draft)
+
+    // Xóa bộ lọc để giao dịch vừa thêm không bị ẩn.
+    resetFilters()
+    setIsFormOpen(false)
+    setMessage('Đã thêm giao dịch thành công.')
   }
 
   return (
@@ -165,6 +187,40 @@ export default function ListPage() {
         />
       </section>
 
+      <div className="mt-8">
+        <button
+          type="button"
+          aria-expanded={isFormOpen}
+          aria-controls="transaction-form-container"
+          onClick={() => {
+            setIsFormOpen((current) => !current)
+            setMessage('')
+          }}
+          className="min-h-11 rounded-lg bg-brand-700 px-5 py-2 font-semibold text-white hover:bg-brand-800"
+        >
+          {isFormOpen ? 'Đóng form' : 'Thêm giao dịch'}
+        </button>
+
+        <p
+          role="status"
+          className="mt-3 text-sm font-medium text-brand-800"
+        >
+          {message}
+        </p>
+      </div>
+
+      <div
+        id="transaction-form-container"
+        hidden={!isFormOpen}
+      >
+        {isFormOpen && (
+          <TransactionForm
+            onSave={handleAddTransaction}
+            onCancel={() => setIsFormOpen(false)}
+          />
+        )}
+      </div>
+
       <TransactionFilters
         filters={filters}
         error={filterError}
@@ -184,10 +240,7 @@ export default function ListPage() {
             Danh sách giao dịch
           </h2>
 
-          <p
-            role="status"
-            className="text-sm text-slate-600"
-          >
+          <p role="status" className="text-sm text-slate-600">
             Hiển thị {filteredTransactions.length}/{transactions.length}
             {' '}giao dịch · Mới nhất trước
           </p>
@@ -205,24 +258,30 @@ export default function ListPage() {
         ) : (
           <div className="rounded-2xl border border-slate-200 bg-white px-6 py-12 text-center">
             <p className="font-semibold">
-              {filterError
-                ? 'Bộ lọc chưa hợp lệ'
-                : 'Không có giao dịch phù hợp'}
+              {transactions.length === 0
+                ? 'Chưa có giao dịch'
+                : filterError
+                  ? 'Bộ lọc chưa hợp lệ'
+                  : 'Không có giao dịch phù hợp'}
             </p>
 
             <p className="mt-2 text-sm text-slate-600">
-              {filterError
-                ? 'Kiểm tra lại khoảng ngày và khoảng tiền.'
-                : 'Thử thay đổi từ khóa hoặc xóa các điều kiện lọc.'}
+              {transactions.length === 0
+                ? 'Nhấn “Thêm giao dịch” để bắt đầu ghi chép.'
+                : filterError
+                  ? 'Kiểm tra lại khoảng ngày và khoảng tiền.'
+                  : 'Thử thay đổi từ khóa hoặc xóa các điều kiện lọc.'}
             </p>
 
-            <button
-              type="button"
-              onClick={resetFilters}
-              className="mt-4 min-h-11 rounded-lg bg-brand-700 px-4 py-2 font-semibold text-white hover:bg-brand-800"
-            >
-              Xóa bộ lọc
-            </button>
+            {transactions.length > 0 && (
+              <button
+                type="button"
+                onClick={resetFilters}
+                className="mt-4 min-h-11 rounded-lg bg-brand-700 px-4 py-2 font-semibold text-white hover:bg-brand-800"
+              >
+                Xóa bộ lọc
+              </button>
+            )}
           </div>
         )}
       </section>
