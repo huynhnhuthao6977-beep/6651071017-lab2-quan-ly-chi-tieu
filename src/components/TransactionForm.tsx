@@ -8,12 +8,13 @@ import {
 import type { Transaction, TransactionType } from '../types'
 
 type TransactionFormProps = {
+  initialValue?: Transaction | undefined
   onSave: (transaction: Omit<Transaction, 'id'>) => void
   onCancel: () => void
 }
 
 const inputClass =
-  'mt-2 min-h-11 w-full min-w-0 rounded-lg border border-slate-300 bg-white px-3 py-2'
+  'mt-2 min-h-11 w-full min-w-0 rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900'
 
 function getToday(): string {
   const today = new Date()
@@ -25,10 +26,14 @@ function getToday(): string {
 }
 
 export default function TransactionForm({
+  initialValue,
   onSave,
   onCancel,
 }: TransactionFormProps) {
-  const [type, setType] = useState<TransactionType>('expense')
+  const [type, setType] = useState<TransactionType>(
+    initialValue?.type ?? 'expense',
+  )
+
   const [error, setError] = useState('')
 
   const categories =
@@ -106,7 +111,7 @@ export default function TransactionForm({
       className="mt-8 rounded-2xl border border-slate-200 bg-white p-5 sm:p-6"
     >
       <h2 id="form-title" className="text-xl font-bold">
-        Thêm giao dịch
+        {initialValue ? 'Sửa giao dịch' : 'Thêm giao dịch'}
       </h2>
 
       <p className="mt-2 text-sm text-slate-600">
@@ -127,6 +132,7 @@ export default function TransactionForm({
               required
               minLength={3}
               maxLength={100}
+              defaultValue={initialValue?.title ?? ''}
               placeholder="Ví dụ: Ăn trưa tại căn tin"
               className={inputClass}
             />
@@ -161,6 +167,7 @@ export default function TransactionForm({
               min="1"
               max={Number.MAX_SAFE_INTEGER}
               step="1"
+              defaultValue={initialValue?.amount ?? ''}
               className={inputClass}
             />
           </label>
@@ -171,7 +178,11 @@ export default function TransactionForm({
               key={type}
               name="category"
               required
-              defaultValue=""
+              defaultValue={
+                initialValue?.type === type
+                  ? initialValue.category
+                  : ''
+              }
               className={inputClass}
             >
               <option value="" disabled>
@@ -192,7 +203,7 @@ export default function TransactionForm({
               name="date"
               type="date"
               required
-              defaultValue={getToday()}
+              defaultValue={initialValue?.date ?? getToday()}
               className={inputClass}
             />
           </label>
@@ -202,7 +213,9 @@ export default function TransactionForm({
             <select
               name="paymentMethod"
               required
-              defaultValue="Tiền mặt"
+              defaultValue={
+                initialValue?.paymentMethod ?? 'Tiền mặt'
+              }
               className={inputClass}
             >
               {paymentMethods.map((method) => (
@@ -219,8 +232,9 @@ export default function TransactionForm({
               name="note"
               rows={3}
               maxLength={500}
-              className={inputClass}
+              defaultValue={initialValue?.note ?? ''}
               placeholder="Tối đa 500 ký tự"
+              className={inputClass}
             />
           </label>
         </div>
@@ -240,7 +254,7 @@ export default function TransactionForm({
             type="submit"
             className="min-h-11 rounded-lg bg-brand-700 px-5 py-2 font-semibold text-white hover:bg-brand-800"
           >
-            Lưu giao dịch
+            {initialValue ? 'Lưu thay đổi' : 'Lưu giao dịch'}
           </button>
 
           <button

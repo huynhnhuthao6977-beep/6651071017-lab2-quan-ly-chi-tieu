@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import SummaryCard from '../components/SummaryCard'
 import TransactionCard from '../components/TransactionCard'
 import TransactionFilters from '../components/TransactionFilters'
@@ -9,7 +9,9 @@ import { formatCurrency } from '../utils'
 
 type ListPageProps = {
   transactions: Transaction[]
-  onAdd: (transaction: Omit<Transaction, 'id'>) => void
+  onAddTransaction: (draft: Omit<Transaction, 'id'>) => boolean
+  onUpdateTransaction: (transaction: Transaction) => boolean
+  onDeleteTransaction: (id: string) => boolean
 }
 
 function createEmptyFilters(): FilterValues {
@@ -64,13 +66,22 @@ function validateFilters(filters: FilterValues): string {
 
 export default function ListPage({
   transactions,
-  onAdd,
+  onAddTransaction,
+  onUpdateTransaction,
+  onDeleteTransaction,
 }: ListPageProps) {
-  const [isFormOpen, setIsFormOpen] = useState(false)
-  const [message, setMessage] = useState('')
   const [filters, setFilters] = useState<FilterValues>(
     createEmptyFilters,
   )
+
+  const [isFormOpen, setIsFormOpen] = useState(false)
+  const [message, setMessage] = useState('')
+
+  const [editingTransaction, setEditingTransaction] =
+    useState<Transaction | null>(null)
+
+  const formContainerRef = useRef<HTMLDivElement>(null)
+  const formToggleRef = useRef<HTMLButtonElement>(null)
 
   const filterError = validateFilters(filters)
   const keyword = normalizeText(filters.keyword)
@@ -93,7 +104,6 @@ export default function ListPage({
 
   const balance = totalIncome - totalExpense
 
-  // filter tạo mảng mới, nên sort không thay đổi dữ liệu từ props.
   const filteredTransactions = transactions
     .filter((transaction) => {
       if (filterError) {
@@ -126,19 +136,74 @@ export default function ListPage({
         first.id.localeCompare(second.id),
     )
 
-  function resetFilters(): void {
+  function resetFilters() {
     setFilters(createEmptyFilters())
   }
 
-  function handleAddTransaction(
-    draft: Omit<Transaction, 'id'>,
-  ): void {
-    onAdd(draft)
+  function focusForm() {
+    // Chờ React hiển thị form mới trước khi chuyển focus.
+    requestAnimationFrame(() => {
+      const input = formContainerRef.current
+        ?.querySelector<HTMLInputElement>('input[name="title"]')
 
-    // Xóa bộ lọc để giao dịch vừa thêm không bị ẩn.
-    resetFilters()
+      input?.focus()
+    })
+  }
+
+  function closeForm() {
     setIsFormOpen(false)
-    setMessage('Đã thêm giao dịch thành công.')
+    setEditingTransaction(null)
+    formToggleRef.current?.focus()
+  }
+
+  function handleSaveTransaction(
+    draft: Omit<Transaction, 'id'>,
+  ) {
+    const saved = editingTransaction
+      ? onUpdateTransaction({
+          ...draft,
+          id: editingTransaction.id,
+        })
+      : onAddTransaction(draft)
+
+    if (!saved) {
+      return
+    }
+
+    setMessage(
+      editingTransaction
+        ? 'Đã cập nhật giao dịch.'
+        : 'Đã thêm giao dịch thành công.',
+    )
+
+    resetFilters()
+    closeForm()
+  }
+
+  function handleEditTransaction(transaction: Transaction) {
+    setEditingTransaction(transaction)
+    setIsFormOpen(true)
+    setMessage('')
+    focusForm()
+  }
+
+  function handleDeleteTransaction(transaction: Transaction) {
+    const confirmed = window.confirm(
+      `Bạn có chắc muốn xóa giao dịch "${transaction.title}"?`,
+    )
+
+    if (!confirmed) {
+      return
+    }
+
+    if (onDeleteTransaction(transaction.id)) {
+      if (editingTransaction?.id === transaction.id) {
+        closeForm()
+      }
+
+      setMessage('Đã xóa giao dịch.')
+      formToggleRef.current?.focus()
+    }
   }
 
   return (
@@ -189,11 +254,19 @@ export default function ListPage({
 
       <div className="mt-8">
         <button
+          ref={formToggleRef}
           type="button"
           aria-expanded={isFormOpen}
           aria-controls="transaction-form-container"
           onClick={() => {
-            setIsFormOpen((current) => !current)
+            if (isFormOpen) {
+              closeForm()
+            } else {
+              setEditingTransaction(null)
+              setIsFormOpen(true)
+              focusForm()
+            }
+
             setMessage('')
           }}
           className="min-h-11 rounded-lg bg-brand-700 px-5 py-2 font-semibold text-white hover:bg-brand-800"
@@ -201,22 +274,21 @@ export default function ListPage({
           {isFormOpen ? 'Đóng form' : 'Thêm giao dịch'}
         </button>
 
-        <p
-          role="status"
-          className="mt-3 text-sm font-medium text-brand-800"
-        >
+        <p role="status" className="mt-3 text-sm text-brand-800">
           {message}
         </p>
       </div>
 
       <div
+        ref={formContainerRef}
         id="transaction-form-container"
-        hidden={!isFormOpen}
       >
         {isFormOpen && (
           <TransactionForm
-            onSave={handleAddTransaction}
-            onCancel={() => setIsFormOpen(false)}
+            key={editingTransaction?.id ?? 'new'}
+            initialValue={editingTransaction ?? undefined}
+            onSave={handleSaveTransaction}
+            onCancel={closeForm}
           />
         )}
       </div>
@@ -252,6 +324,8 @@ export default function ListPage({
               <TransactionCard
                 key={transaction.id}
                 transaction={transaction}
+                onEdit={handleEditTransaction}
+                onDelete={handleDeleteTransaction}
               />
             ))}
           </div>
@@ -267,21 +341,19 @@ export default function ListPage({
 
             <p className="mt-2 text-sm text-slate-600">
               {transactions.length === 0
-                ? 'Nhấn “Thêm giao dịch” để bắt đầu ghi chép.'
+                ? 'Nhấn Thêm giao dịch để bắt đầu ghi chép.'
                 : filterError
                   ? 'Kiểm tra lại khoảng ngày và khoảng tiền.'
                   : 'Thử thay đổi từ khóa hoặc xóa các điều kiện lọc.'}
             </p>
 
-            {transactions.length > 0 && (
-              <button
-                type="button"
-                onClick={resetFilters}
-                className="mt-4 min-h-11 rounded-lg bg-brand-700 px-4 py-2 font-semibold text-white hover:bg-brand-800"
-              >
-                Xóa bộ lọc
-              </button>
-            )}
+            <button
+              type="button"
+              onClick={resetFilters}
+              className="mt-4 min-h-11 rounded-lg bg-brand-700 px-4 py-2 font-semibold text-white hover:bg-brand-800"
+            >
+              Xóa bộ lọc
+            </button>
           </div>
         )}
       </section>

@@ -4,10 +4,14 @@ import { formatCurrency, truncateText } from '../utils'
 
 type TransactionCardProps = {
   transaction: Transaction
+  onEdit: (transaction: Transaction) => void
+  onDelete: (transaction: Transaction) => void
 }
 
 export default function TransactionCard({
   transaction,
+  onEdit,
+  onDelete,
 }: TransactionCardProps) {
   const isIncome = transaction.type === 'income'
   const displayDate = transaction.date.split('-').reverse().join('/')
@@ -66,7 +70,7 @@ export default function TransactionCard({
         {truncateText(transaction.note, 80) || 'Không có ghi chú.'}
       </p>
 
-      <div className="mt-auto pt-5">
+      <div className="mt-auto flex flex-wrap gap-2 pt-5">
         <Link
           to={`/item/${transaction.id}`}
           aria-label={`Xem chi tiết: ${transaction.title}`}
@@ -74,6 +78,24 @@ export default function TransactionCard({
         >
           Xem chi tiết
         </Link>
+
+        <button
+          type="button"
+          onClick={() => onEdit(transaction)}
+          aria-label={`Sửa giao dịch: ${transaction.title}`}
+          className="min-h-11 rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold hover:bg-slate-100"
+        >
+          Sửa
+        </button>
+
+        <button
+          type="button"
+          onClick={() => onDelete(transaction)}
+          aria-label={`Xóa giao dịch: ${transaction.title}`}
+          className="min-h-11 rounded-lg border border-rose-300 px-4 py-2 text-sm font-semibold text-rose-800 hover:bg-rose-50"
+        >
+          Xóa
+        </button>
       </div>
     </article>
   )

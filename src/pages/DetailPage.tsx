@@ -11,7 +11,7 @@ export default function DetailPage({
 }: DetailPageProps) {
   const { id } = useParams<{ id: string }>()
 
-    const transaction = transactions.find(
+  const transaction = transactions.find(
     (item) => item.id === id,
   )
 
@@ -23,7 +23,8 @@ export default function DetailPage({
         </h1>
 
         <p className="mt-3 text-slate-600">
-          Giao dịch không tồn tại hoặc đường dẫn không chính xác.
+          Giao dịch không tồn tại, đã bị xóa hoặc đường dẫn
+          không chính xác.
         </p>
 
         <Link
@@ -78,7 +79,9 @@ export default function DetailPage({
         <dl className="mt-8 grid grid-cols-1 gap-6 border-t border-slate-200 pt-6 sm:grid-cols-2">
           <div>
             <dt className="text-sm text-slate-600">Mã giao dịch</dt>
-            <dd className="mt-1 font-semibold">{transaction.id}</dd>
+            <dd className="mt-1 break-words font-semibold">
+              {transaction.id}
+            </dd>
           </div>
 
           <div>
@@ -89,9 +92,13 @@ export default function DetailPage({
           </div>
 
           <div>
-            <dt className="text-sm text-slate-600">Ngày giao dịch</dt>
+            <dt className="text-sm text-slate-600">
+              Ngày giao dịch
+            </dt>
             <dd className="mt-1 font-semibold">
-              <time dateTime={transaction.date}>{displayDate}</time>
+              <time dateTime={transaction.date}>
+                {displayDate}
+              </time>
             </dd>
           </div>
 
