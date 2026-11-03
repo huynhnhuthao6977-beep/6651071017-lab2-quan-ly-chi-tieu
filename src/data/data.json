@@ -1,0 +1,202 @@
+[
+  {
+    "id": "GD001",
+    "title": "Gia đình hỗ trợ sinh hoạt tháng 11",
+    "type": "income",
+    "amount": 3000000,
+    "category": "Gia đình hỗ trợ",
+    "date": "2026-11-01",
+    "paymentMethod": "Chuyển khoản",
+    "note": "Khoản hỗ trợ chi phí sinh hoạt đầu tháng."
+  },
+  {
+    "id": "GD002",
+    "title": "Lương làm thêm tháng 10",
+    "type": "income",
+    "amount": 2400000,
+    "category": "Lương làm thêm",
+    "date": "2026-11-01",
+    "paymentMethod": "Chuyển khoản",
+    "note": "Tiền làm thêm tại quán cà phê."
+  },
+  {
+    "id": "GD003",
+    "title": "Tiền thuê phòng tháng 11",
+    "type": "expense",
+    "amount": 1500000,
+    "category": "Nhà ở",
+    "date": "2026-11-01",
+    "paymentMethod": "Chuyển khoản",
+    "note": "Phần tiền phòng cá nhân sau khi chia với bạn."
+  },
+  {
+    "id": "GD004",
+    "title": "Tiền điện tháng 10",
+    "type": "expense",
+    "amount": 180000,
+    "category": "Nhà ở",
+    "date": "2026-11-01",
+    "paymentMethod": "Chuyển khoản",
+    "note": "Chi phí điện sinh hoạt của cá nhân."
+  },
+  {
+    "id": "GD005",
+    "title": "Tiền nước tháng 10",
+    "type": "expense",
+    "amount": 60000,
+    "category": "Nhà ở",
+    "date": "2026-11-01",
+    "paymentMethod": "Tiền mặt",
+    "note": "Thanh toán tiền nước cho chủ phòng."
+  },
+  {
+    "id": "GD006",
+    "title": "Cơm trưa tại căn tin",
+    "type": "expense",
+    "amount": 35000,
+    "category": "Ăn uống",
+    "date": "2026-11-02",
+    "paymentMethod": "Tiền mặt",
+    "note": "Ăn trưa sau giờ học."
+  },
+  {
+    "id": "GD007",
+    "title": "Đổ xăng đi học",
+    "type": "expense",
+    "amount": 70000,
+    "category": "Di chuyển",
+    "date": "2026-11-02",
+    "paymentMethod": "Tiền mặt",
+    "note": "Đổ xăng cho xe máy."
+  },
+  {
+    "id": "GD008",
+    "title": "In tài liệu thiết kế web",
+    "type": "expense",
+    "amount": 25000,
+    "category": "Học tập",
+    "date": "2026-11-02",
+    "paymentMethod": "Tiền mặt",
+    "note": "In tài liệu phục vụ buổi thực hành."
+  },
+  {
+    "id": "GD009",
+    "title": "Mua vở và bút",
+    "type": "expense",
+    "amount": 45000,
+    "category": "Học tập",
+    "date": "2026-11-02",
+    "paymentMethod": "Ví điện tử",
+    "note": "Mua hai quyển vở và một hộp bút."
+  },
+  {
+    "id": "GD010",
+    "title": "Bữa tối cùng bạn",
+    "type": "expense",
+    "amount": 55000,
+    "category": "Ăn uống",
+    "date": "2026-11-02",
+    "paymentMethod": "Ví điện tử",
+    "note": "Phần tiền ăn tối của cá nhân."
+  },
+  {
+    "id": "GD011",
+    "title": "Học bổng khuyến khích học tập",
+    "type": "income",
+    "amount": 1200000,
+    "category": "Học bổng",
+    "date": "2026-10-28",
+    "paymentMethod": "Chuyển khoản",
+    "note": "Khoản học bổng được chuyển vào tài khoản."
+  },
+  {
+    "id": "GD012",
+    "title": "Bán sách cũ",
+    "type": "income",
+    "amount": 150000,
+    "category": "Thu nhập khác",
+    "date": "2026-10-29",
+    "paymentMethod": "Chuyển khoản",
+    "note": "Bán lại bộ sách đã học xong."
+  },
+  {
+    "id": "GD013",
+    "title": "Mua áo thun",
+    "type": "expense",
+    "amount": 150000,
+    "category": "Mua sắm",
+    "date": "2026-10-29",
+    "paymentMethod": "Ví điện tử",
+    "note": "Mua áo mặc hằng ngày."
+  },
+  {
+    "id": "GD014",
+    "title": "Vé xem phim cuối tuần",
+    "type": "expense",
+    "amount": 75000,
+    "category": "Giải trí",
+    "date": "2026-10-30",
+    "paymentMethod": "Ví điện tử",
+    "note": "Vé xem phim suất sinh viên."
+  },
+  {
+    "id": "GD015",
+    "title": "Mua thuốc cảm",
+    "type": "expense",
+    "amount": 65000,
+    "category": "Sức khỏe",
+    "date": "2026-10-30",
+    "paymentMethod": "Tiền mặt",
+    "note": "Chi phí mua thuốc tại nhà thuốc."
+  },
+  {
+    "id": "GD016",
+    "title": "Vé xe buýt",
+    "type": "expense",
+    "amount": 14000,
+    "category": "Di chuyển",
+    "date": "2026-10-31",
+    "paymentMethod": "Tiền mặt",
+    "note": "Tiền xe buýt đi và về."
+  },
+  {
+    "id": "GD017",
+    "title": "Cà phê học nhóm",
+    "type": "expense",
+    "amount": 30000,
+    "category": "Ăn uống",
+    "date": "2026-10-31",
+    "paymentMethod": "Ví điện tử",
+    "note": "Đồ uống trong buổi làm bài nhóm."
+  },
+  {
+    "id": "GD018",
+    "title": "Mua giáo trình lập trình",
+    "type": "expense",
+    "amount": 120000,
+    "category": "Học tập",
+    "date": "2026-10-28",
+    "paymentMethod": "Chuyển khoản",
+    "note": "Giáo trình phục vụ môn lập trình."
+  },
+  {
+    "id": "GD019",
+    "title": "Tiền làm thêm ca cuối tuần",
+    "type": "income",
+    "amount": 300000,
+    "category": "Lương làm thêm",
+    "date": "2026-10-31",
+    "paymentMethod": "Chuyển khoản",
+    "note": "Tiền công ca làm bổ sung."
+  },
+  {
+    "id": "GD020",
+    "title": "Mua đồ dùng vệ sinh phòng",
+    "type": "expense",
+    "amount": 85000,
+    "category": "Mua sắm",
+    "date": "2026-11-03",
+    "paymentMethod": "Ví điện tử",
+    "note": "Mua nước lau sàn và túi đựng rác."
+  }
+]
