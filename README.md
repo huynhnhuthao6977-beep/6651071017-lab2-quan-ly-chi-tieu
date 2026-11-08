@@ -115,4 +115,4 @@ https://github.com/huynhnhuthao6977-beep/6651071017-lab2-quan-ly-chi-tieu
 ## Liên kết nộp bài
 
 - Website: https://6651071017-lab2-quan-ly-chi-tieu.vercel.app
-- Video demo: bổ sung sau khi hoàn thành.
+- Video demo: https://drive.google.com/file/d/1KKtsIcJM1wV9EY1Ex0j1SY6-x3ThRZfI/view?usp=sharing
