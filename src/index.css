@@ -7,11 +7,36 @@
     font-family: Arial, Helvetica, sans-serif;
     color: #0f172a;
     background-color: #f8fafc;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    scroll-padding-top: 1rem;
   }
 
   body {
     margin: 0;
     min-width: 320px;
+  }
+
+  #root {
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
+  main,
+  section,
+  article,
+  header,
+  footer {
+    min-width: 0;
+  }
+
+  h1,
+  h2,
+  h3,
+  p,
+  dd,
+  a {
+    overflow-wrap: anywhere;
   }
 
   button,
@@ -21,13 +46,71 @@
     font: inherit;
   }
 
+  input,
+  select,
+  textarea {
+    font-size: 1rem;
+    max-width: 100%;
+  }
+
+  input[type='date'] {
+    min-width: 0;
+  }
+
+  textarea {
+    resize: vertical;
+  }
+
+  button,
+  a,
+  input,
+  select,
+  textarea {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button {
+    touch-action: manipulation;
+  }
+
+  button:not(:disabled) {
+    cursor: pointer;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+  }
+
   :focus-visible {
     outline: 3px solid #047857;
     outline-offset: 4px;
   }
 
+  input::placeholder,
+  textarea::placeholder {
+    color: #64748b;
+    opacity: 1;
+  }
+
+  dialog {
+    max-height: 85vh;
+    max-height: 85dvh;
+    overscroll-behavior: contain;
+  }
+
   ::selection {
     color: #064e3b;
     background-color: #a7f3d0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
