@@ -88,8 +88,25 @@ Các ảnh phác thảo giao diện được lưu trong thư mục design/.
 
 ## Chạy dự án
 
+```bash
 npm install
 npm run dev
+```
+
+## Kiểm tra chất lượng
+
+```bash
+npx tsc --noEmit
+npx eslint .
+npm run test
+```
+
+| Kiểm tra | Kết quả |
+|---|---|
+| `npx tsc --noEmit` | 0 lỗi |
+| `npx eslint .` | 0 lỗi, 0 cảnh báo |
+| `npm run test` | 7/7 test case pass |
+| Lighthouse (Mobile) | Performance: ?? · Accessibility: ?? · Best Practices: ?? |
 
 ## Repository
 
@@ -97,5 +114,5 @@ https://github.com/huynhnhuthao6977-beep/6651071017-lab2-quan-ly-chi-tieu
 
 ## Liên kết nộp bài
 
-- Website: (https://6651071017-lab2-quan-ly-chi-tieu.vercel.app/)
+- Website: https://6651071017-lab2-quan-ly-chi-tieu.vercel.app
 - Video demo: bổ sung sau khi hoàn thành.
