@@ -106,7 +106,7 @@ npm run test
 | `npx tsc --noEmit` | 0 lỗi |
 | `npx eslint .` | 0 lỗi, 0 cảnh báo |
 | `npm run test` | 7/7 test case pass |
-| Lighthouse (Mobile) | Performance: ?? · Accessibility: ?? · Best Practices: ?? |
+| Lighthouse (Mobile) | Performance: 99 · Accessibility: 100 · Best Practices: 100 |
 
 ## Repository
 
